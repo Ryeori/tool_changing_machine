@@ -82,8 +82,8 @@ class _RevolverHeadState extends State<RevolverHead>
     final itemSize = ((circleLength + circleLength / 3) / (itemAmount)) / pi;
 
     //TODO: REFACTOR
-    if (localToolRotationResponse != widget.toolRotationResponse &&
-        widget.toolRotationResponse != null) {
+    if (widget.toolRotationResponse != null &&
+        localToolRotationResponse != widget.toolRotationResponse) {
       localToolRotationResponse = widget.toolRotationResponse!;
       localToolRotationResponse.rotationDirection == RotationDirection.left
           ? _rotationAnimationController.animateTo(
@@ -98,46 +98,48 @@ class _RevolverHeadState extends State<RevolverHead>
                       2,
               curve: animationCurve,
               duration: animationDuration);
+    } else {
+      _rotationAnimationController.animateTo(
+          ((1 / itemAmount) * (itemAmount - widget.currentToolIndex)) / 2,
+          curve: animationCurve,
+          duration: animationDuration);
     }
-    return InkWell(
-      child: RotationTransition(
-        turns:
-            Tween(begin: -1.0, end: 1.0).animate(_rotationAnimationController),
-        child: Container(
-          height: circleSize,
-          width: circleSize,
-          decoration:
-              BoxDecoration(color: Colors.grey[500], shape: BoxShape.circle),
-          child: AnimatedRotation(
-            duration: const Duration(milliseconds: 500),
-            turns: widget.currentToolIndex.toDouble() <= 0 ? 1 : 1,
-            child: Stack(
-                alignment: Alignment.center,
-                children: List.generate(
-                    itemAmount,
-                    (index) => Transform.translate(
-                          offset: Offset(0, -(circleSize - itemSize) / 2),
-                          child: Transform.rotate(
-                            angle: calculateItemAngle(index),
-                            origin: Offset(0, (circleSize - itemSize) / 2),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 250),
-                              height: itemSize,
-                              width: itemSize,
-                              decoration: BoxDecoration(
-                                  border: index == widget.targetToolIndex
-                                      ? Border.all(
-                                          width: 3, color: Colors.red.shade400)
-                                      : const Border(),
-                                  color: index == widget.currentToolIndex
-                                      ? Colors.blue
-                                      : Colors.grey[300],
-                                  shape: BoxShape.circle),
-                              child: Center(child: Text(index.toString())),
-                            ),
+    return RotationTransition(
+      turns: Tween(begin: -1.0, end: 1.0).animate(_rotationAnimationController),
+      child: Container(
+        height: circleSize,
+        width: circleSize,
+        decoration:
+            BoxDecoration(color: Colors.grey[500], shape: BoxShape.circle),
+        child: AnimatedRotation(
+          duration: const Duration(milliseconds: 500),
+          turns: widget.currentToolIndex.toDouble() <= 0 ? 1 : 1,
+          child: Stack(
+              alignment: Alignment.center,
+              children: List.generate(
+                  itemAmount,
+                  (index) => Transform.translate(
+                        offset: Offset(0, -(circleSize - itemSize) / 2),
+                        child: Transform.rotate(
+                          angle: calculateItemAngle(index),
+                          origin: Offset(0, (circleSize - itemSize) / 2),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            height: itemSize,
+                            width: itemSize,
+                            decoration: BoxDecoration(
+                                border: index == widget.targetToolIndex
+                                    ? Border.all(
+                                        width: 3, color: Colors.red.shade400)
+                                    : const Border(),
+                                color: index == widget.currentToolIndex
+                                    ? Colors.blue
+                                    : Colors.grey[300],
+                                shape: BoxShape.circle),
+                            child: Center(child: Text(index.toString())),
                           ),
-                        ))),
-          ),
+                        ),
+                      ))),
         ),
       ),
     );
