@@ -1,4 +1,4 @@
-enum RotationDirection { left, right }
+enum RotationDirection { left, right, none }
 
 class ToolRotationResponse {
   final int rotationTimes;

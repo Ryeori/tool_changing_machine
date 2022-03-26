@@ -15,7 +15,7 @@ class ToolChangingMachine {
       required this.targetTool});
 
   ToolRotationResponse? proceedToolChanging() {
-    final targetToolIndex = textControllerIndexParser(targetTool, toolsList);
+    final targetToolIndex = getToolIndex(targetTool, toolsList);
     if (targetToolIndex == -1) {
       return null;
     }

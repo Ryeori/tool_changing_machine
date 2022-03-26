@@ -5,5 +5,6 @@ const List<String> testTools = [
   'facemill',
   'another drill',
   'and a rusty saw',
-  'lol'
+  'Super crowbar',
+  'i have no idea what to add',
 ];

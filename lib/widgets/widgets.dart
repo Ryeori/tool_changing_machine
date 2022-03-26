@@ -32,8 +32,7 @@ class _ToolChangingMachineTextFieldState
         decoration: InputDecoration(label: Text(widget.label)),
         controller: widget.controller,
         onChanged: (value) {
-          if (textControllerIndexParser(value, widget.toolsList) >
-              widget.itemAmount - 1) {
+          if (getToolIndex(value, widget.toolsList) > widget.itemAmount - 1) {
             widget.controller.text = (widget.itemAmount - 1).toString();
             widget.controller.selection = TextSelection.fromPosition(
                 TextPosition(offset: widget.controller.text.length));
@@ -51,8 +50,7 @@ class TopBar extends StatefulWidget {
   // final Function(String value) onTotalAmountChange;
   final Function(String value) onTargetToolChange;
   final Function(String value) onCurrentToolChange;
-  final Function(String newToolName) onNewToolSelected;
-
+  final Function(ToolRotationResponse toolRotationResponse) onNewToolSelected;
   const TopBar(
       {Key? key,
       required this.toolsList,
@@ -79,17 +77,6 @@ class _TopBarState extends State<TopBar> {
       children: [
         Row(
           children: [
-            // Expanded(
-            //   child: TextField(
-            //       decoration: InputDecoration(
-            //           label: const Text('Tools amount'),
-            //           alignLabelWithHint: true,
-            //           floatingLabelBehavior: FloatingLabelBehavior.always,
-            //           hintText: widget.itemAmount.toString()),
-            //       keyboardType: TextInputType.number,
-            //       onChanged: widget.onTotalAmountChange),
-            // ),
-            // const VerticalDivider(),
             Expanded(
                 child: ToolChangingMachineTextField(
               controller: widget.targetToolController,
@@ -119,7 +106,9 @@ class _TopBarState extends State<TopBar> {
                         currentToolIndex:
                             (int.tryParse(widget.currentToolController.text) ??
                                 0),
-                        targetTool: widget.targetToolController.text.trim(),
+                        targetTool: getToolName(
+                            widget.targetToolController.text.trim(),
+                            widget.toolsList),
                         toolsList: widget.toolsList);
                     toolRotationResponse =
                         toolChangingMachine.proceedToolChanging();
@@ -127,8 +116,8 @@ class _TopBarState extends State<TopBar> {
                       widget.currentToolController.text = widget.toolsList
                           .indexOf(toolRotationResponse!.targetTool)
                           .toString();
-                      widget
-                          .onNewToolSelected(toolRotationResponse!.targetTool);
+                      toolRotationResponse = toolRotationResponse;
+                      widget.onNewToolSelected(toolRotationResponse!);
                     }
                   });
                 },
