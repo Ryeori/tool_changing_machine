@@ -1,16 +1,9 @@
 # tool_changing_machine
 
-A new Flutter project.
+A milling machine with a different tool on a revolver-type tool changing system. The algorithm inside chooses the direction and the amount of changes of the tools to get selected one.
 
-## Getting Started
+Red color stands for target tool that you want to select
+Blue color stand for current selected tool
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You could select tool either by typing index of it either by the name of the tool, both will be valid
+Current set of tools is stored in **/lib/utils/test_data.dart** file.
