@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:tool_changing_machine/models/tool_rotation_response.dart';
+import 'package:tool_changing_machine/utils/constant.dart';
 import 'package:tool_changing_machine/utils/parser.dart';
 
 class ToolChangingMachine {
@@ -18,49 +18,25 @@ class ToolChangingMachine {
     final targetToolIndex = getToolIndex(targetTool, toolsList);
     if (targetToolIndex == -1) {
       return null;
-    }
-    final int indexDifference = targetToolIndex - currentToolIndex;
-
-    final int absoluteIndexDifference = indexDifference.abs();
-
-    if (absoluteIndexDifference > (toolsList.length ~/ 2)) {
-      //Amount of times need to rotate until target tool
-      final int rotationOffset = toolsList.length - absoluteIndexDifference;
-
-      return indexDifference.isNegative
-          ? _proceedMove(
-              rotationOffset,
-              toolsList.elementAt(((currentToolIndex + rotationOffset) >=
-                          toolsList.length
-                      ? (toolsList.length - (currentToolIndex + rotationOffset))
-                      : (currentToolIndex + rotationOffset))
-                  .abs()),
-              RotationDirection.right)
-          : _proceedMove(
-              rotationOffset,
-              toolsList.elementAt(
-                  ((currentToolIndex - rotationOffset).isNegative
-                          ? toolsList.length -
-                              (currentToolIndex - rotationOffset).abs()
-                          : currentToolIndex - rotationOffset)
-                      .abs()),
-              RotationDirection.left);
     } else {
+      final double rotationStep = circleLength / toolsList.length;
+      final int indexDifference = targetToolIndex - currentToolIndex;
+      final double startToTargetLength = indexDifference * rotationStep;
+      final bool pointsLengthLessThanPi = startToTargetLength.abs() < piNumber;
+
       return _proceedMove(
-          absoluteIndexDifference,
-          toolsList.elementAt(!indexDifference.isNegative
-              ? currentToolIndex + absoluteIndexDifference
-              : currentToolIndex - absoluteIndexDifference),
-          !indexDifference.isNegative
-              ? RotationDirection.right
-              : RotationDirection.left);
+          pointsLengthLessThanPi
+              ? indexDifference.abs()
+              : toolsList.length - indexDifference.abs(),
+          toolsList.elementAt(targetToolIndex),
+          (indexDifference.isNegative && pointsLengthLessThanPi)
+              ? RotationDirection.left
+              : RotationDirection.right);
     }
   }
 
   ToolRotationResponse _proceedMove(
       int rotationTimes, String tool, RotationDirection rotationDirection) {
-    print(
-        'Moved ${describeEnum(rotationDirection)} $rotationTimes times and selected $tool');
     return ToolRotationResponse(
         rotationTimes: rotationTimes,
         rotationDirection: rotationDirection,

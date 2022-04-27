@@ -10,7 +10,7 @@ int getToolIndex(String valueToParse, List<String> toolsList) {
 String getToolName(String indexOrName, List<String> toolsList) {
   final int? parsedResult = int.tryParse(indexOrName);
   if (parsedResult == null) {
-    return toolsList.singleWhere(
+    return toolsList.firstWhere(
       (element) => element == indexOrName,
       orElse: () => '',
     );
